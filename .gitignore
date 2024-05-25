@@ -1,0 +1,8 @@
+# Project exclude paths
+/cmake-build-debug/
+
+# IDE
+.idea
+
+#keys
+wsl_key*
