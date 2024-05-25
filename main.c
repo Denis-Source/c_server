@@ -8,35 +8,51 @@
 #include "connection_handler/connection_handler.h"
 #include "hash_table/table.h"
 #include "queue/queue.h"
+#include "listener/listener.h"
 
 #define PORT 8000
 #define MAX_CONNECTIONS 256
 
 int main() {
     pthread_t thread_id;
-    Connection server_conn = {0};
-    Queue queue;
+    Message message = {0};
+    Connection *server_connection = malloc(sizeof(Connection));
+    Queue *queue = malloc(sizeof(Queue));
 
+    KVTable *connection_table = table_init(MAX_CONNECTIONS);
 
-    KVTable table = *table_init(MAX_CONNECTIONS);
+    if (create_queue("/my_queue", queue) != true) return 1;
+    if (bind_connection(PORT, server_connection) != true) return 1;
 
-    if (bind_connection(PORT, &server_conn) != true) return 1;
-    if (create_queue("/my_queue", &queue) != true) return 1;
+    ListenerArgs *listener_args = malloc(sizeof(ListenerArgs));
+    listener_args->server_connection = server_connection;
+    listener_args->queue = queue;
+    pthread_create(&thread_id, NULL, listen_connections, (void *) listener_args);
 
-    listen_on_connection(&server_conn);
-    Connection *client_conn = malloc(sizeof(Connection));
-    table_set(&table, &client_conn->fd, sizeof(client_conn->fd), client_conn);
-    ThreadArgs *args = malloc(sizeof(ThreadArgs));
-    args->conn = client_conn;
-    args->queue = &queue;
-    if (!accept_connection(&server_conn, client_conn)) return 1;
-
-    pthread_create(&thread_id, NULL, handle_connection, (void *) args);
-
-    while (1) {
-        Message message = {0};
-        if (read_queue(&queue, &message) != true) break;
-        printf("%s", message.buff);
+    while (read_queue(queue, &message)) {
+        switch (message.type) {
+            case MESSAGE_NOT_SPECIFIED:
+                break;
+            case MESSAGE_LISTENING:
+                printf("Started Listening\n");
+                break;
+            case MESSAGE_OPEN_CONNECTION:
+                printf("Opened Connection\n");
+//                table_set(connection_table, message.connection + sizeof(MessageType), sizeof(message.connection->fd), message.connection);
+                break;
+            case MESSAGE_CLOSE_CONNECTION:
+                printf("Closed Connection\n");
+                table_clear(connection_table, message.connection + sizeof(MessageType), sizeof(message.connection->fd));
+                break;
+            case MESSAGE_RECEIVED:
+                printf("Message received: %s\n", message.payload);
+                broadcast_message(connection_table, message.payload);
+                break;
+            case MESSAGE_BAN:
+                break;
+            case MESSAGE_STOP_LISTENING:
+                break;
+        }
     }
 
     return 0;

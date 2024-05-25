@@ -2,6 +2,7 @@
 #define SERVER_QUEUE_H
 
 #include "stdlib.h"
+#include "../connection/connection.h"
 #include <mqueue.h>
 #include <stdbool.h>
 
@@ -11,22 +12,27 @@
 
 
 typedef enum {
-    NOT_SPECIFIED,
-    OPEN_CONNECTION,
-    CLOSE_CONNECTION,
-    UNICAST,
-    BROADCAST,
-    BAN
+    MESSAGE_NOT_SPECIFIED,
+    MESSAGE_LISTENING,
+    MESSAGE_OPEN_CONNECTION,
+    MESSAGE_CLOSE_CONNECTION,
+    MESSAGE_RECEIVED,
+    MESSAGE_BAN,
+    MESSAGE_STOP_LISTENING
 } MessageType;
 
 typedef struct {
     MessageType type;
-    char buff[MESSAGE_BUFF_SIZE];
+    Connection *connection;
+    char payload[MESSAGE_BUFF_SIZE];
 } Message;
 
 typedef struct {
+    bool valid;
     char *name;
 } Queue;
+
+void populate_message(Message *message, MessageType type, Connection *connection, char *payload);
 
 bool create_queue(char *name, Queue *queue);
 

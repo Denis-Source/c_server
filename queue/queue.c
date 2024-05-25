@@ -2,7 +2,14 @@
 #include "queue.h"
 #include "memory.h"
 
-void populate_queue(Queue *queue, mqd_t mqd, char *name) {
+void populate_message(Message *message, MessageType type, Connection *connection, char *payload) {
+    message->type= type;
+    message->connection = connection;
+    if (payload != NULL) memcpy(message->payload, payload, MESSAGE_BUFF_SIZE);
+}
+
+void populate_queue(Queue *queue, char *name, bool valid) {
+    queue->valid = valid;
     queue->name = name;
 }
 
@@ -16,19 +23,19 @@ bool create_queue(char *name, Queue *queue) {
 
     mqd_t mqd = mq_open(name, O_CREAT | O_RDWR, 0660, &attr);
     if (mqd == (mqd_t) -1) return false;
-    populate_queue(queue, mqd, name);
+    populate_queue(queue, name, true);
     return true;
 }
 
 bool send_queue(Queue *queue, Message *message) {
     char buffer[sizeof(MessageType) + MESSAGE_BUFF_SIZE];
     memcpy(buffer, &message->type, sizeof(MessageType));
-    memcpy(buffer + sizeof(MessageType), message->buff, MESSAGE_BUFF_SIZE);
+    memcpy(buffer + sizeof(MessageType), message->payload, MESSAGE_BUFF_SIZE);
 
     mqd_t mq = mq_open(queue->name, O_WRONLY);
 
     if (mq_send(mq, buffer, 256, 0) == -1) {
-        perror("mq_send");
+        queue->valid = false;
         mq_close(mq);
         return false;
     };
@@ -43,13 +50,14 @@ bool read_queue(Queue *queue, Message *message) {
     if (mq == (mqd_t)-1) return false;
 
     if (mq_receive(mq, buffer, sizeof(buffer), NULL) == -1) {
+        queue->valid = false;
         mq_close(mq);
         return false;
     }
     mq_close(mq);
 
     memcpy(&message->type, buffer, sizeof(MessageType));
-    memcpy(message->buff, buffer + sizeof(MessageType), MESSAGE_BUFF_SIZE);
+    memcpy(message->payload, buffer + sizeof(MessageType), MESSAGE_BUFF_SIZE);
 
     return true;
 }

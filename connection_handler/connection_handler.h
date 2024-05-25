@@ -1,14 +1,20 @@
 #ifndef SERVER_CONNECTION_HANDLER_H
 #define SERVER_CONNECTION_HANDLER_H
 
+#include "string.h"
 #include "../connection/connection.h"
 #include "../queue/queue.h"
+#include "../hash_table/table.h"
+
+#define BUFFER_SIZE 1024
 
 typedef struct {
-    Connection *conn;
+    Connection *client_connection;
     Queue *queue;
-} ThreadArgs;
+} HandlerArgs;
 
-void *handle_connection(void *arg) ;
+void broadcast_message(KVTable *connection_table, char *payload);
+
+void *handle_connection(void *arg);
 
 #endif //SERVER_CONNECTION_HANDLER_H

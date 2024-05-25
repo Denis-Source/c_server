@@ -1,27 +1,32 @@
 #include "connection_handler.h"
-#include "stdio.h"
-#include "../queue/queue.h"
-#include "string.h"
 
-#define BUFFER_SIZE 1024
+
+void broadcast_message(KVTable *connection_table, char* payload) {
+//    for (int i = 0; i < connection_table->size; ++i) {
+//        Connection *client_connection = connection_table[i]._storage->value;
+//        if (client_connection == NULL) continue;
+//        send_connection(client_connection, payload, strlen(payload));
+//    }
+}
 
 void *handle_connection(void *arg) {
-    ThreadArgs *t_args = (ThreadArgs *) arg;
+    HandlerArgs *t_args = (HandlerArgs *) arg;
 
-    printf("Connected to %d\n", t_args->conn->fd);
+    Connection *client_connection = t_args->client_connection;
+    Queue *queue = t_args->queue;
     char buffer[BUFFER_SIZE] = {0};
     Message message;
 
-    while (read_connection(t_args->conn, buffer, BUFFER_SIZE)) {
-        memcpy(message.buff, buffer, sizeof(message.buff));
-        message.type = BROADCAST;
-
-        send_queue(t_args->queue, &message);
-        printf("%d, %s\n", t_args->conn->fd, buffer);
+    populate_message(&message, MESSAGE_OPEN_CONNECTION, client_connection, NULL);
+    send_queue(queue, &message);
+    while (read_connection(client_connection, buffer, BUFFER_SIZE)) {
+        memcpy(message.payload, buffer, sizeof(message.payload));
+        populate_message(&message, MESSAGE_RECEIVED, client_connection, buffer);
+        send_queue(queue, &message);
     }
-
-
-    close_connection(t_args->conn);
-    printf("Disconnected\n");
+    close_connection(client_connection);
+    populate_message(&message, MESSAGE_CLOSE_CONNECTION, NULL, NULL);
+    send_queue(queue, &message);
+    free(client_connection);
     return NULL;
 }
