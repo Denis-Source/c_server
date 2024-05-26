@@ -14,7 +14,7 @@ typedef struct {
     Queue *queue;
 } HandlerArgs;
 
-void broadcast_message(KVTable *connection_table, char* payload, Connection *exception);
+void broadcast_message(KVTable *connection_table, char* payload, Connection *author);
 
 void *handle_connection(void *arg);
 

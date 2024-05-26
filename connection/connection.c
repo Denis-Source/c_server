@@ -1,18 +1,22 @@
 #include <stdio.h>
 #include "connection.h"
+#include "../hash_table/hash.h"
 
 #define CONNECTIONS_LIMIT 256
+#define CONNECTION_MASK 0x4C5A3F2C1B8D
 
 void populate_connection(Connection *conn, int32_t fd, u_int32_t address, u_int16_t port) {
     conn->fd = fd;
     conn->address = address;
     conn->port = port;
+    conn->name = (((u_int64_t) address << 16) + port) ^ CONNECTION_MASK;
 }
 
 void empty_connection(Connection *conn) {
     conn->fd = 0;
     conn->address = 0;
     conn->port = 0;
+    conn->name = 0;
 }
 
 bool bind_connection(u_int16_t port, Connection *conn) {

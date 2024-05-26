@@ -11,6 +11,7 @@ typedef struct {
     int32_t fd;
     u_int32_t address;
     u_int16_t port;
+    u_int64_t name;
 } Connection;
 
 void empty_connection(Connection *conn);

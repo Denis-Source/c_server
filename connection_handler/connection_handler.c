@@ -1,13 +1,16 @@
 #include "connection_handler.h"
 #include "stdio.h"
 
-void broadcast_message(KVTable *connection_table, char* payload, Connection *exception) {
+void broadcast_message(KVTable *connection_table, char* payload, Connection *author) {
+    char *formatted_message = format_message(payload, author->name);
     for (int i = 0; i < connection_table->size; ++i) {
         Connection *client_connection = connection_table->_storage[i].value;
         if (client_connection == NULL) continue;
-        if (client_connection == exception) continue;
-        send_connection(client_connection, payload, strlen(payload));
+        if (client_connection == author) continue;
+
+        send_connection(client_connection, formatted_message, strlen(formatted_message));
     }
+    free(formatted_message);
 }
 
 void *handle_connection(void *arg) {

@@ -53,7 +53,7 @@ int main() {
                 free(message.connection);
                 break;
             case MESSAGE_RECEIVED:
-                printf("Message received: %lu from %u\n", strlen(message.payload), message.connection->fd);
+                printf("Message received: %lu from %lu\n", strlen(message.payload), message.connection->name);
                 broadcast_message(connection_table, message.payload, message.connection);
                 break;
             case MESSAGE_STRIKE:
