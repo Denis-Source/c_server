@@ -48,13 +48,13 @@ void server_serve() {
     if (queue == NULL) {
         printf("Cannot allocate mqueue");
         return;
-    };
+    }
 
     KVTable *connections = table_init(MAX_CONNECTIONS);
     if (connections == NULL) {
         printf("Cannot allocate table connections");
         return;
-    };
+    }
 
     if (bind_connection(PORT, server_connection) != true) return;
 
@@ -62,7 +62,7 @@ void server_serve() {
     if (listener_args == NULL) {
         printf("Cannot allocate listener");
         return;
-    };
+    }
     listener_args->server_connection = server_connection;
     listener_args->queue = queue;
 
@@ -71,4 +71,6 @@ void server_serve() {
     while (read_queue(queue, &q_message)) {
         server_handle_queue(&q_message, connections);
     }
+
+    table_free(connections);
 }

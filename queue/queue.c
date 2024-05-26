@@ -46,7 +46,7 @@ bool send_queue(Queue *queue, QMessage *message) {
         queue->valid = false;
         mq_close(mq);
         return false;
-    };
+    }
     mq_close(mq);
     return true;
 }
