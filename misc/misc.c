@@ -18,7 +18,7 @@ bool sanitize_buffer(char *buffer, size_t size) {
 }
 
 void format_message(char *message, Connection *connection, MessageType type) {
-    // May easily overflow, but there is not additional allocations and buffers for convenience of use
+    // TODO May easily overflow, but there is no additional allocations and buffers for convenience of use
     char temp_buffer[strlen(message) + 1];
     strcpy(temp_buffer, message);
     switch (type) {
