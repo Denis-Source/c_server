@@ -1,5 +1,4 @@
 #include "misc.h"
-#include "stdio.h"
 
 bool is_allowed_char(char c) {
     return strchr(ALLOWED_SYMBOLS, c) != NULL;
@@ -18,9 +17,21 @@ bool sanitize_buffer(char *buffer, size_t size) {
     return valid;
 }
 
-char *format_message(char *buffer, u_int64_t author) {
-    char *new_buffer = malloc(strlen(buffer) + 16);
-    sprintf(new_buffer, "%lx: %s", author, buffer);
-
-    return new_buffer;
+void format_message(char *message, Connection *connection, MessageType type) {
+    // May easily overflow, but there is not additional allocations and buffers for convenience of use
+    char temp_buffer[strlen(message) + 1];
+    strcpy(temp_buffer, message);
+    switch (type) {
+        case MESSAGE_CONNECTED:
+            sprintf(message, "%lx connected!\n", connection->name);
+            break;
+        case MESSAGE_DISCONNECTED:
+            sprintf(message, "%lx disconnected!\n", connection->name);
+            break;
+        case MESSAGE_SENT:
+            sprintf(message, "%lx: %s", connection->name, temp_buffer);
+            break;
+        default:
+            sprintf(message, "%s", temp_buffer);
+    }
 }

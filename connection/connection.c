@@ -72,5 +72,4 @@ bool send_connection(Connection *conn, void *buffer, size_t buffer_size) {
 
 void close_connection(Connection *conn) {
     close(conn->fd);
-    empty_connection(conn);
 }

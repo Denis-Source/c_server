@@ -17,7 +17,7 @@
 
 int main() {
     pthread_t thread_id;
-    Message message = {0};
+    QMessage q_message = {0};
     Connection *server_connection = malloc(sizeof(Connection));
 
     Queue *queue = create_queue(QUEUE_NAME);
@@ -35,30 +35,36 @@ int main() {
 
     pthread_create(&thread_id, NULL, listen_connections, (void *) listener_args);
 
-    while (read_queue(queue, &message)) {
-        switch (message.type) {
-            case MESSAGE_NOT_SPECIFIED:
+    while (read_queue(queue, &q_message)) {
+        switch (q_message.type) {
+            case Q_MESSAGE_NOT_SPECIFIED:
                 break;
-            case MESSAGE_START_LISTENING:
+            case Q_MESSAGE_START_LISTENING:
                 printf("Started Listening\n");
                 break;
-            case MESSAGE_OPEN_CONNECTION:
+            case Q_MESSAGE_OPEN_CONNECTION:
                 printf("Opened Connection\n");
-                table_set(connection_table, &message.connection->fd, sizeof(message.connection->fd),
-                          message.connection);
+                table_set(connection_table, &q_message.connection->fd, sizeof(q_message.connection->fd),
+                          q_message.connection);
+                format_message(q_message.payload, q_message.connection, MESSAGE_CONNECTED);
+                broadcast_message(connection_table, q_message.payload, NULL);
                 break;
-            case MESSAGE_CLOSE_CONNECTION:
+            case Q_MESSAGE_CLOSE_CONNECTION:
                 printf("Closed Connection\n");
-                table_clear(connection_table, &message.connection->fd, sizeof(message.connection->fd));
-                free(message.connection);
+                table_clear(connection_table, &q_message.connection->fd, sizeof(q_message.connection->fd));
+                format_message(q_message.payload, q_message.connection, MESSAGE_DISCONNECTED);
+                broadcast_message(connection_table, q_message.payload, NULL);
+                empty_connection(q_message.connection);
+                free(q_message.connection);
                 break;
-            case MESSAGE_RECEIVED:
-                printf("Message received: %lu from %lu\n", strlen(message.payload), message.connection->name);
-                broadcast_message(connection_table, message.payload, message.connection);
+            case Q_MESSAGE_RECEIVED:
+                printf("QMessage received: %lu from %lu\n", strlen(q_message.payload), q_message.connection->name);
+                broadcast_message(connection_table, q_message.payload, q_message.connection);
                 break;
-            case MESSAGE_STRIKE:
-            case MESSAGE_BAN:
-            case MESSAGE_STOP_LISTENING:
+            case Q_MESSAGE_STRIKE:
+            case Q_MESSAGE_BAN:
+            case Q_MESSAGE_STOP_LISTENING:
+                printf("Stopped Listening\n");
                 break;
         }
     }

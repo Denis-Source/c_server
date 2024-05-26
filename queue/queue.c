@@ -2,7 +2,7 @@
 #include "queue.h"
 #include "memory.h"
 
-void populate_message(Message *message, MessageType type, Connection *connection, char *payload) {
+void populate_message(QMessage *message, QMessageType type, Connection *connection, char *payload) {
     message->type= type;
     message->connection = connection;
     if (payload != NULL) memcpy(message->payload, payload, MESSAGE_BUFF_SIZE);
@@ -31,11 +31,11 @@ Queue *create_queue(char *name) {
     return queue;
 }
 
-bool send_queue(Queue *queue, Message *message) {
-    size_t data_size = sizeof(MessageType) + sizeof(Connection);
+bool send_queue(Queue *queue, QMessage *message) {
+    size_t data_size = sizeof(QMessageType) + sizeof(Connection);
     char buffer[data_size + MESSAGE_BUFF_SIZE];
-    memcpy(buffer, &message->type, sizeof(MessageType));
-    memcpy(buffer + sizeof(MessageType), &message->connection, sizeof(Connection));
+    memcpy(buffer, &message->type, sizeof(QMessageType));
+    memcpy(buffer + sizeof(QMessageType), &message->connection, sizeof(Connection));
     memcpy(buffer + data_size, message->payload, MESSAGE_BUFF_SIZE);
 
     mqd_t mq = mq_open(queue->name, O_WRONLY);
@@ -51,8 +51,8 @@ bool send_queue(Queue *queue, Message *message) {
     return true;
 }
 
-bool read_queue(Queue *queue, Message *message) {
-    size_t data_size = sizeof(MessageType) + sizeof(Connection);
+bool read_queue(Queue *queue, QMessage *message) {
+    size_t data_size = sizeof(QMessageType) + sizeof(Connection);
     char buffer[data_size + MESSAGE_BUFF_SIZE];
 
     mqd_t mq = mq_open(queue->name, O_RDONLY);
@@ -65,8 +65,8 @@ bool read_queue(Queue *queue, Message *message) {
     }
     mq_close(mq);
 
-    memcpy(&message->type, buffer, sizeof(MessageType));
-    memcpy(&message->connection, buffer + sizeof(MessageType), sizeof(Connection));
+    memcpy(&message->type, buffer, sizeof(QMessageType));
+    memcpy(&message->connection, buffer + sizeof(QMessageType), sizeof(Connection));
     memcpy(message->payload, buffer + data_size, MESSAGE_BUFF_SIZE);
 
     return true;

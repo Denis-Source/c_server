@@ -12,33 +12,34 @@
 
 
 typedef enum {
-    MESSAGE_NOT_SPECIFIED,
-    MESSAGE_START_LISTENING,
-    MESSAGE_OPEN_CONNECTION,
-    MESSAGE_CLOSE_CONNECTION,
-    MESSAGE_RECEIVED,
-    MESSAGE_STRIKE,
-    MESSAGE_BAN,
-    MESSAGE_STOP_LISTENING
-} MessageType;
+    Q_MESSAGE_NOT_SPECIFIED,
+    Q_MESSAGE_START_LISTENING,
+    Q_MESSAGE_OPEN_CONNECTION,
+    Q_MESSAGE_CLOSE_CONNECTION,
+    Q_MESSAGE_RECEIVED,
+    Q_MESSAGE_STRIKE,
+    Q_MESSAGE_BAN,
+    Q_MESSAGE_STOP_LISTENING
+} QMessageType;
+
 
 typedef struct {
-    MessageType type;
+    QMessageType type;
     Connection *connection;
     char payload[MESSAGE_BUFF_SIZE];
-} Message;
+} QMessage;
 
 typedef struct {
     bool valid;
     char *name;
 } Queue;
 
-void populate_message(Message *message, MessageType type, Connection *connection, char *payload);
+void populate_message(QMessage *message, QMessageType type, Connection *connection, char *payload);
 
 Queue *create_queue(char *name);
 
-bool send_queue(Queue *queue, Message *message);
+bool send_queue(Queue *queue, QMessage *message);
 
-bool read_queue(Queue *queue, Message *message);
+bool read_queue(Queue *queue, QMessage *message);
 
 #endif //SERVER_QUEUE_H
