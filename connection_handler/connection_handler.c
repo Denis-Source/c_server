@@ -33,8 +33,8 @@ void *handle_connection(void *arg) {
         memset(buffer, '\0', BUFFER_SIZE);
     }
     close_connection(client_connection);
-    populate_message(&message, MESSAGE_CLOSE_CONNECTION, NULL, NULL);
+    populate_message(&message, MESSAGE_CLOSE_CONNECTION, client_connection, NULL);
     send_queue(queue, &message);
-    free(client_connection);
+    free(arg);
     return NULL;
 }

@@ -13,7 +13,10 @@ void populate_queue(Queue *queue, char *name, bool valid) {
     queue->name = name;
 }
 
-bool create_queue(char *name, Queue *queue) {
+Queue *create_queue(char *name) {
+    Queue *queue = malloc(sizeof(Queue));
+    if (queue == NULL) return NULL;
+
     struct mq_attr attr = {
             .mq_flags = 0,
             .mq_maxmsg = MAX_MESSAGES,
@@ -22,9 +25,10 @@ bool create_queue(char *name, Queue *queue) {
     };
 
     mqd_t mqd = mq_open(name, O_CREAT | O_RDWR, 0660, &attr);
-    if (mqd == (mqd_t) -1) return false;
+    if (mqd == (mqd_t) -1) return NULL;
+
     populate_queue(queue, name, true);
-    return true;
+    return queue;
 }
 
 bool send_queue(Queue *queue, Message *message) {
@@ -43,7 +47,7 @@ bool send_queue(Queue *queue, Message *message) {
         mq_close(mq);
         return false;
     };
-
+    mq_close(mq);
     return true;
 }
 

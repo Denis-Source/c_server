@@ -13,11 +13,12 @@
 
 typedef enum {
     MESSAGE_NOT_SPECIFIED,
-    MESSAGE_LISTENING,
+    MESSAGE_START_LISTENING,
     MESSAGE_OPEN_CONNECTION,
     MESSAGE_CLOSE_CONNECTION,
     MESSAGE_RECEIVED,
     MESSAGE_STRIKE,
+    MESSAGE_BAN,
     MESSAGE_STOP_LISTENING
 } MessageType;
 
@@ -34,7 +35,7 @@ typedef struct {
 
 void populate_message(Message *message, MessageType type, Connection *connection, char *payload);
 
-bool create_queue(char *name, Queue *queue);
+Queue *create_queue(char *name);
 
 bool send_queue(Queue *queue, Message *message);
 

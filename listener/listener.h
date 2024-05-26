@@ -1,7 +1,6 @@
 #ifndef SERVER_LISTENER_H
 #define SERVER_LISTENER_H
 
-#define PORT 8000
 #define MAX_CONNECTIONS 256
 
 #include <arpa/inet.h>
