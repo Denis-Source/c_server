@@ -1,6 +1,5 @@
-#include <stdio.h>
 #include "queue.h"
-#include "memory.h"
+
 
 void populate_message(QMessage *message, QMessageType type, Connection *connection, char *payload) {
     message->type= type;

@@ -1,5 +1,5 @@
 #include "connection_handler.h"
-#include "stdio.h"
+
 
 void broadcast_message(KVTable *connection_table, char* payload, Connection *author) {
     if(author != NULL) format_message(payload, author, MESSAGE_SENT);

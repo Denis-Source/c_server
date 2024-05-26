@@ -2,10 +2,12 @@
 #define SERVER_CONNECTION_HANDLER_H
 
 #include "string.h"
+
 #include "../connection/connection.h"
 #include "../queue/queue.h"
 #include "../hash_table/table.h"
 #include "../misc/misc.h"
+
 
 #define BUFFER_SIZE 1024
 

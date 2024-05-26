@@ -1,5 +1,6 @@
 #include "misc.h"
 
+
 bool is_allowed_char(char c) {
     return strchr(ALLOWED_SYMBOLS, c) != NULL;
 }

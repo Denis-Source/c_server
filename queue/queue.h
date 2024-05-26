@@ -1,10 +1,14 @@
 #ifndef SERVER_QUEUE_H
 #define SERVER_QUEUE_H
 
-#include "stdlib.h"
-#include "../connection/connection.h"
+#include <stdio.h>
 #include <mqueue.h>
 #include <stdbool.h>
+#include "stdlib.h"
+#include "memory.h"
+
+#include "../connection/connection.h"
+
 
 #define MESSAGE_BUFF_SIZE 256
 #define MAX_MESSAGES 16

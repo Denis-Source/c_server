@@ -1,5 +1,6 @@
 #include "listener.h"
 
+
 void *listen_connections(void *args) {
     ListenerArgs *t_args = (ListenerArgs*) args;
     Connection *server_connection = t_args->server_connection;

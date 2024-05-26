@@ -3,10 +3,12 @@
 
 
 #include <stdbool.h>
-#include "string.h"
-#include "stdlib.h"
 #include "stdio.h"
+#include "stdlib.h"
+#include "string.h"
+
 #include "../connection/connection.h"
+
 
 #define ALLOWED_SYMBOLS "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789?!,.-_\r\n "
 

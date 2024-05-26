@@ -1,10 +1,6 @@
 #include "server.h"
 
 
-#define PORT 6969
-#define MAX_CONNECTIONS 256
-#define QUEUE_NAME "/my_queue"
-
 void server_handle_queue(QMessage *q_message, KVTable *connections) {
     switch (q_message->type) {
         case Q_MESSAGE_NOT_SPECIFIED:
