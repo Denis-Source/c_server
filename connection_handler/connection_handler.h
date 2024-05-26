@@ -5,6 +5,7 @@
 #include "../connection/connection.h"
 #include "../queue/queue.h"
 #include "../hash_table/table.h"
+#include "../misc/misc.h"
 
 #define BUFFER_SIZE 1024
 
@@ -13,7 +14,7 @@ typedef struct {
     Queue *queue;
 } HandlerArgs;
 
-void broadcast_message(KVTable *connection_table, char *payload);
+void broadcast_message(KVTable *connection_table, char* payload, Connection *exception);
 
 void *handle_connection(void *arg);
 

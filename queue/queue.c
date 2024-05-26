@@ -28,13 +28,17 @@ bool create_queue(char *name, Queue *queue) {
 }
 
 bool send_queue(Queue *queue, Message *message) {
-    char buffer[sizeof(MessageType) + MESSAGE_BUFF_SIZE];
+    size_t data_size = sizeof(MessageType) + sizeof(Connection);
+    char buffer[data_size + MESSAGE_BUFF_SIZE];
     memcpy(buffer, &message->type, sizeof(MessageType));
-    memcpy(buffer + sizeof(MessageType), message->payload, MESSAGE_BUFF_SIZE);
+    memcpy(buffer + sizeof(MessageType), &message->connection, sizeof(Connection));
+    memcpy(buffer + data_size, message->payload, MESSAGE_BUFF_SIZE);
 
     mqd_t mq = mq_open(queue->name, O_WRONLY);
 
+
     if (mq_send(mq, buffer, 256, 0) == -1) {
+        perror("mq_send");
         queue->valid = false;
         mq_close(mq);
         return false;
@@ -44,7 +48,8 @@ bool send_queue(Queue *queue, Message *message) {
 }
 
 bool read_queue(Queue *queue, Message *message) {
-    char buffer[sizeof(MessageType) + MESSAGE_BUFF_SIZE];
+    size_t data_size = sizeof(MessageType) + sizeof(Connection);
+    char buffer[data_size + MESSAGE_BUFF_SIZE];
 
     mqd_t mq = mq_open(queue->name, O_RDONLY);
     if (mq == (mqd_t)-1) return false;
@@ -57,12 +62,8 @@ bool read_queue(Queue *queue, Message *message) {
     mq_close(mq);
 
     memcpy(&message->type, buffer, sizeof(MessageType));
-    memcpy(message->payload, buffer + sizeof(MessageType), MESSAGE_BUFF_SIZE);
+    memcpy(&message->connection, buffer + sizeof(MessageType), sizeof(Connection));
+    memcpy(message->payload, buffer + data_size, MESSAGE_BUFF_SIZE);
 
     return true;
 }
-
-//void close_queue(Queue *queue) {
-//    mq_close(queue->mqd);
-//    mq_unlink(queue->name);
-//}
