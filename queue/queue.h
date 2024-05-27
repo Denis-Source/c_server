@@ -4,8 +4,8 @@
 #include <stdio.h>
 #include <mqueue.h>
 #include <stdbool.h>
-#include "stdlib.h"
-#include "memory.h"
+#include <stdlib.h>
+#include <memory.h>
 
 #include "../connection/connection.h"
 

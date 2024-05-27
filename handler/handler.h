@@ -1,7 +1,7 @@
 #ifndef SERVER_HANDLER_H
 #define SERVER_HANDLER_H
 
-#include "string.h"
+#include <string.h>
 
 #include "../connection/connection.h"
 #include "../queue/queue.h"

@@ -5,7 +5,7 @@
 #include <stdbool.h>
 #include <unistd.h>
 #include <arpa/inet.h>
-#include "stdlib.h"
+#include <stdlib.h>
 
 #include "../hash_table/hash.h"
 
