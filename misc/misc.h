@@ -10,7 +10,8 @@
 #include "../connection/connection.h"
 
 
-#define ALLOWED_SYMBOLS "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789?!,.-_\r\n "
+#define ALLOWED_SYMBOLS "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789()?!,;:&*+@$%^/><'.-_\r\n "
+#define MESSAGE_FORMATTING_SIZE 16
 
 typedef enum {
     MESSAGE_CONNECTED,

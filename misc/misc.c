@@ -19,9 +19,9 @@ bool sanitize_buffer(char *buffer, size_t size) {
 }
 
 void format_message(char *message, Connection *connection, MessageType type) {
-    // TODO May easily overflow, but there is no additional allocations and buffers for convenience of use
-    char temp_buffer[strlen(message) + 1];
+    char temp_buffer[strlen(message) + MESSAGE_FORMATTING_SIZE];
     strcpy(temp_buffer, message);
+    if (message[strlen(message) - 1 != '\n']) temp_buffer[strlen(message) - 1] = '\n';
     switch (type) {
         case MESSAGE_CONNECTED:
             sprintf(message, "%lx connected!\n", connection->name);

@@ -9,7 +9,7 @@
 #include "../misc/misc.h"
 
 
-#define BUFFER_SIZE 1024
+#define MESSAGE_BUFFER_SIZE QUEUE_PAYLOAD_SIZE
 
 typedef struct {
     Connection *client_connection;

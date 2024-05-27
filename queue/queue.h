@@ -9,10 +9,8 @@
 
 #include "../connection/connection.h"
 
-
-#define MESSAGE_BUFF_SIZE 256
-#define MAX_MESSAGES 10
-#define MAX_MSG_SIZE 256
+#define QUEUE_MAX_MESSAGES 10
+#define QUEUE_PAYLOAD_SIZE 256
 #define QUEUE_PERMISSIONS 0660
 
 typedef enum {
@@ -30,7 +28,7 @@ typedef enum {
 typedef struct {
     QMessageType type;
     Connection *connection;
-    char payload[MESSAGE_BUFF_SIZE];
+    char payload[QUEUE_PAYLOAD_SIZE];
 } QMessage;
 
 typedef struct {
@@ -45,5 +43,7 @@ Queue *create_queue(char *name);
 bool send_queue(Queue *queue, QMessage *message);
 
 bool read_queue(Queue *queue, QMessage *message);
+
+void close_queue(Queue *queue);
 
 #endif //SERVER_QUEUE_H

@@ -15,7 +15,7 @@ typedef struct {
 
 typedef struct {
     size_t size;
-    KVItem *_storage;
+    KVItem *storage;
 } KVTable;
 
 KVTable *table_init(size_t size);

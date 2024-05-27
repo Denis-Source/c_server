@@ -11,7 +11,7 @@
 
 
 #define MAX_CONNECTIONS 256
-#define QUEUE_NAME "/s_server"
+#define QUEUE_NAME "/s2_server"
 
 void server_serve();
 
