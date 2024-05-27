@@ -3,10 +3,12 @@
 
 void *listen_connections(void *args) {
     ListenerArgs *t_args = (ListenerArgs*) args;
-    Connection *server_connection = t_args->server_connection;
+    Connection *server_connection = malloc(sizeof(Connection));
     Queue *queue = t_args->queue;
     QMessage message;
 
+
+    if (bind_connection(PORT, server_connection) != true) NULL;
     populate_message(&message, Q_MESSAGE_START_LISTENING, NULL, NULL);
     send_queue(queue, &message);
 
@@ -26,5 +28,6 @@ void *listen_connections(void *args) {
     populate_message(&message, Q_MESSAGE_STOP_LISTENING, NULL, NULL);
     send_queue(queue, &message);
     free(args);
+    free(server_connection);
     return NULL;
 }

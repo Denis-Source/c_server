@@ -38,28 +38,25 @@ void server_handle_queue(QMessage *q_message, KVTable *connections) {
 void server_serve() {
     pthread_t thread_id;
     QMessage q_message = {0};
-    Connection *server_connection = malloc(sizeof(Connection));
 
     Queue *queue = create_queue(QUEUE_NAME);
     if (queue == NULL) {
-        printf("Cannot allocate mqueue");
+        printf("Cannot allocate mqueue\n");
         return;
     }
 
     KVTable *connections = table_init(MAX_CONNECTIONS);
     if (connections == NULL) {
-        printf("Cannot allocate table connections");
+        printf("Cannot allocate table connections\n");
         return;
     }
 
-    if (bind_connection(PORT, server_connection) != true) return;
 
     ListenerArgs *listener_args = malloc(sizeof(ListenerArgs));
     if (listener_args == NULL) {
-        printf("Cannot allocate listener");
+        printf("Cannot allocate listener\n");
         return;
     }
-    listener_args->server_connection = server_connection;
     listener_args->queue = queue;
 
     pthread_create(&thread_id, NULL, listen_connections, (void *) listener_args);

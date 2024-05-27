@@ -1,5 +1,5 @@
-#ifndef SERVER_CONNECTION_HANDLER_H
-#define SERVER_CONNECTION_HANDLER_H
+#ifndef SERVER_HANDLER_H
+#define SERVER_HANDLER_H
 
 #include "string.h"
 
@@ -20,4 +20,4 @@ void broadcast_message(KVTable *connection_table, char* payload, Connection *aut
 
 void *handle_connection(void *arg);
 
-#endif //SERVER_CONNECTION_HANDLER_H
+#endif //SERVER_HANDLER_H

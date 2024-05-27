@@ -23,7 +23,7 @@ Queue *create_queue(char *name) {
             .mq_curmsgs = 0,
     };
 
-    mqd_t mqd = mq_open(name, O_CREAT | O_RDWR, 0660, &attr);
+    mqd_t mqd = mq_open(name, O_CREAT | O_RDWR, QUEUE_PERMISSIONS, &attr);
     if (mqd == (mqd_t) -1) return NULL;
 
     populate_queue(queue, name, true);

@@ -11,9 +11,9 @@
 
 
 #define MESSAGE_BUFF_SIZE 256
-#define MAX_MESSAGES 16
-#define MAX_MSG_SIZE 1024
-
+#define MAX_MESSAGES 10
+#define MAX_MSG_SIZE 256
+#define QUEUE_PERMISSIONS 0660
 
 typedef enum {
     Q_MESSAGE_NOT_SPECIFIED,

@@ -7,13 +7,13 @@
 #include "../hash_table/table.h"
 #include "../connection/connection.h"
 #include "../queue/queue.h"
-#include "../connection_handler/connection_handler.h"
+#include "../handler/handler.h"
 
 
 #define MAX_CONNECTIONS 256
+#define PORT 6969
 
 typedef struct {
-    Connection *server_connection;
     Queue *queue;
 } ListenerArgs;
 
