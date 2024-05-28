@@ -13,7 +13,7 @@ ServerContext *initialize_server_context() {
         printf("Cannot allocate table connections\n");
         return NULL;
     }
-    RecentMessages *recent_messages = init_recent_messages(RECENT_MESSAGE_SIZE);
+    RecentMessages *recent_messages = init_recent_messages(RECENT_MESSAGES_SIZE);
     if (recent_messages == NULL) {
         printf("Cannot allocate message buffer\n");
         return NULL;
