@@ -11,4 +11,6 @@
 #define SOCKET_MAX_CONNECTIONS 256
 #define QUEUE_NAME "/s2_server"
 
+#define RECENT_MESSAGE_SIZE 100
+
 #endif //SERVER_DEFINITIONS_H

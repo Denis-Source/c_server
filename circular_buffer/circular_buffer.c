@@ -32,10 +32,15 @@ MessageBuffer *init_message_buffer(size_t size) {
 bool add_messages_buffer(MessageBuffer *buffer, char *data) {
     bool replaced = false;
 
-    buffer->head = (buffer->head + 1) % buffer->size;
-    if (buffer->storage[buffer->head] != NULL) {
-        buffer->tail = (buffer->tail + buffer->size - 1) % buffer->size;
-        replaced = true;
+    if (buffer->head == INVALID_ADDRESS) {
+        buffer->head = 0;
+        buffer->tail = 0;
+    } else {
+        buffer->head = (buffer->head + 1) % buffer->size;
+        if (buffer->head == buffer->tail) {
+            buffer->tail = (buffer->tail + 1) % buffer->size;
+            replaced = true;
+        }
     }
     memcpy(buffer->storage[buffer->head], data, MESSAGE_SIZE);
     return replaced;
@@ -54,12 +59,15 @@ bool get_messages_tail_buffer(MessageBuffer *buffer, char *result, size_t index)
     if (buffer->tail == INVALID_ADDRESS) return false;
     if (index >= buffer->size) return false;
 
-    size_t real_index = (buffer->tail + buffer->size - index) % buffer->size;
+    size_t real_index = (buffer->tail + index) % buffer->size;
     memcpy(result, buffer->storage[real_index], MESSAGE_SIZE);
     return true;
 }
 
-void free_messages_buffer(MessageBuffer *circularBuffer) {
-    free(circularBuffer->storage);
-    free(circularBuffer);
+void free_messages_buffer(MessageBuffer *buffer) {
+    for (size_t i = 0; i < buffer->size; i++) {
+        free(buffer->storage[i]);
+    }
+    free(buffer->storage);
+    free(buffer);
 }

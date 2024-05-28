@@ -5,7 +5,7 @@ void server_broadcast_message(char *buffer, QMessage *q_message, ServerContext *
     for (size_t i = 0; i < context->connections->size; ++i) {
         Connection *client_connection = context->connections->storage[i].value;
         if (client_connection == NULL) continue;
-        if (client_connection == q_message->connection && send_to_author) continue;
+        if (client_connection == q_message->connection && !send_to_author) continue;
 
         send_connection(client_connection, buffer, strlen(buffer));
     }
