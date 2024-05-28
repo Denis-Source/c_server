@@ -1,13 +1,15 @@
 #include "handler.h"
 
-void send_recent_messages(Connection *connection, MessageBuffer *recent_messages) {
+
+void send_recent_messages(Connection *connection, RecentMessages *recent_messages) {
     char message[MESSAGE_SIZE] = {0};
     u_int32_t index = 0;
-    while (get_messages_tail_buffer(recent_messages, message, index)) {
+    while (get_tail_recent_messages(recent_messages, message, index)) {
         send_connection(connection, message, strlen(message));
         ++index;
     }
 }
+
 
 void *handle_connection(void *arg) {
     HandlerArgs *t_args = (HandlerArgs *) arg;

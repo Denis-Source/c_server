@@ -13,7 +13,7 @@ ServerContext *initialize_server_context() {
         printf("Cannot allocate table connections\n");
         return NULL;
     }
-    MessageBuffer *recent_messages = init_message_buffer(RECENT_MESSAGE_SIZE);
+    RecentMessages *recent_messages = init_recent_messages(RECENT_MESSAGE_SIZE);
     if (recent_messages == NULL) {
         printf("Cannot allocate message buffer\n");
         return NULL;
@@ -33,8 +33,8 @@ ServerContext *initialize_server_context() {
 
 
 void free_server_context(ServerContext *context) {
-    free_messages_buffer(context->recent_messages);
+    free_recent_messages(context->recent_messages);
     free_queue(context->queue);
-    free_messages_buffer(context->recent_messages);
+    free_recent_messages(context->recent_messages);
     free(context);
 }

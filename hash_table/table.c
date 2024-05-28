@@ -15,6 +15,7 @@ KVTable *init_table(size_t size) {
     return table;
 }
 
+
 bool set_table(KVTable *table, void *key, size_t size, void *value) {
     u_int64_t hash_value = hash(key, size) % table->size;
     u_int64_t index;
@@ -39,6 +40,7 @@ bool clear_table(KVTable *table, void *key, size_t size) {
     return set_table(table, key, size, NULL);
 }
 
+
 bool get_table(KVTable *table, void *key, size_t size, void **result) {
     u_int64_t hash_value = hash(key, size) % table->size;
     u_int64_t index;
@@ -58,6 +60,7 @@ bool get_table(KVTable *table, void *key, size_t size, void **result) {
     *result = NULL;
     return false;
 }
+
 
 void free_table(KVTable *table) {
     free(table->storage);

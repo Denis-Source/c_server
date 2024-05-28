@@ -6,12 +6,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
 #include "../connection/connection.h"
+#include "../definitions.h"
 
-
-#define ALLOWED_SYMBOLS "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789()?!,;:&*+@$%^/><'.-_\r\n "
-#define MESSAGE_FORMATTING_SIZE 16
 
 typedef enum {
     MESSAGE_CONNECTED,
@@ -22,5 +19,6 @@ typedef enum {
 bool sanitize_buffer(char *buffer, size_t size);
 
 void format_message(char *message, char *result, Connection *connection, MessageType type);
+
 
 #endif //SERVER_MISC_H

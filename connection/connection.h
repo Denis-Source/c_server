@@ -1,6 +1,7 @@
 #ifndef SERVER_CONNECTION_H
 #define SERVER_CONNECTION_H
 
+
 #include <stdio.h>
 #include <stdbool.h>
 #include <unistd.h>
@@ -8,11 +9,9 @@
 #include <stdlib.h>
 #include <time.h>
 #include <unistd.h>
-
 #include "../hash_table/hash.h"
+#include "../definitions.h"
 
-
-#define CONNECTIONS_LIMIT 256
 
 typedef struct {
     int32_t fd;
@@ -34,5 +33,6 @@ bool read_connection(Connection *conn, void *buffer, size_t buffer_size);
 bool send_connection(Connection *conn, void *buffer, size_t buffer_size);
 
 void close_connection(Connection *conn);
+
 
 #endif //SERVER_CONNECTION_H

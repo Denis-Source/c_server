@@ -15,7 +15,7 @@ void server_handle_start_listening(QMessage *q_message, ServerContext *context) 
     char buffer[MESSAGE_SIZE] = {0};
 
     sprintf(buffer, "Started listening\n");
-    add_messages_buffer(context->recent_messages, buffer);
+    add_recent_messages(context->recent_messages, buffer);
     printf("%s", buffer);
 }
 
@@ -36,7 +36,7 @@ void server_handle_open_connection(QMessage *q_message, ServerContext *context) 
             q_message->payload,
             q_message->connection,
             MESSAGE_CONNECTED);
-    add_messages_buffer(
+    add_recent_messages(
             context->recent_messages,
             buffer);
     server_broadcast_message(
@@ -61,7 +61,7 @@ void server_handle_close_connection(QMessage *q_message, ServerContext *context)
             q_message->payload,
             q_message->connection,
             MESSAGE_DISCONNECTED);
-    add_messages_buffer(
+    add_recent_messages(
             context->recent_messages,
             buffer);
     server_broadcast_message(
@@ -81,7 +81,7 @@ void server_handle_received_message(QMessage *q_message, ServerContext *context)
             q_message->payload,
             q_message->connection,
             MESSAGE_SENT);
-    add_messages_buffer(
+    add_recent_messages(
             context->recent_messages,
             q_message->payload);
     server_broadcast_message(
