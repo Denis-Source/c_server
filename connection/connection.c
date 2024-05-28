@@ -3,7 +3,7 @@
 u_int64_t static_generate_random() {
     static u_int64_t value = 0;
     if (value == 0) {
-        srand((unsigned int) (time(NULL) ^ getpid()));
+        srand((uint32_t) (time(NULL) ^ getpid()));
         value = ((u_int64_t) rand() << 32) | rand();
     }
     return value;

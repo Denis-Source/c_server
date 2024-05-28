@@ -3,7 +3,7 @@
 
 void broadcast_message(KVTable *connection_table, char *payload, Connection *author) {
     if (author != NULL) format_message(payload, author, MESSAGE_SENT);
-    for (int i = 0; i < connection_table->size; ++i) {
+    for (size_t i = 0; i < connection_table->size; ++i) {
         Connection *client_connection = connection_table->storage[i].value;
         if (client_connection == NULL) continue;
         if (client_connection == author) continue;
