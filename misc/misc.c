@@ -18,21 +18,19 @@ bool sanitize_buffer(char *buffer, size_t size) {
     return valid;
 }
 
-void format_message(char *message, Connection *connection, MessageType type) {
-    char temp_buffer[strlen(message) + MESSAGE_FORMATTING_SIZE];
-    strcpy(temp_buffer, message);
-    if (message[strlen(message) - 1 != '\n']) temp_buffer[strlen(message) - 1] = '\n';
+void format_message(char *result, char *message, Connection *connection, MessageType type) {
     switch (type) {
         case MESSAGE_CONNECTED:
-            sprintf(message, "%lx connected!\n", connection->name);
+            sprintf(result, "%lx connected!\n", connection->name);
             break;
         case MESSAGE_DISCONNECTED:
-            sprintf(message, "%lx disconnected!\n", connection->name);
+            sprintf(result, "%lx disconnected!\n", connection->name);
             break;
         case MESSAGE_SENT:
-            sprintf(message, "%lx: %s", connection->name, temp_buffer);
+            sprintf(result, "%lx: %s", connection->name, message);
             break;
         default:
-            sprintf(message, "%s", temp_buffer);
+            sprintf(result, "%s", message);
     }
+    if (message[strlen(result) - 1 != '\n']) result[strlen(result) - 1] = '\n';
 }

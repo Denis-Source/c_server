@@ -18,14 +18,14 @@ typedef struct {
     KVItem *storage;
 } KVTable;
 
-KVTable *table_init(size_t size);
+KVTable *init_table(size_t size);
 
-bool table_set(KVTable *table, void *key, size_t size, void *value);
+bool set_table(KVTable *table, void *key, size_t size, void *value);
 
-bool table_get(KVTable *table, void *key, size_t size, void **result);
+bool get_table(KVTable *table, void *key, size_t size, void **result);
 
-bool table_clear(KVTable *table, void *key, size_t size);
+bool clear_table(KVTable *table, void *key, size_t size);
 
-void table_free(KVTable *table);
+void free_table(KVTable *table);
 
 #endif //HASH_TABLE_TABLE_H

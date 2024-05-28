@@ -7,16 +7,14 @@
 #include "../queue/queue.h"
 #include "../hash_table/table.h"
 #include "../misc/misc.h"
-
+#include "../server/context.h"
 
 #define MESSAGE_BUFFER_SIZE QUEUE_PAYLOAD_SIZE
 
 typedef struct {
     Connection *client_connection;
-    Queue *queue;
+    ServerContext *context;
 } HandlerArgs;
-
-void broadcast_message(KVTable *connection_table, char* payload, Connection *author);
 
 void *handle_connection(void *arg);
 

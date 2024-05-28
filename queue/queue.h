@@ -44,6 +44,6 @@ bool send_queue(Queue *queue, QMessage *message);
 
 bool read_queue(Queue *queue, QMessage *message);
 
-void close_queue(Queue *queue);
+void free_queue(Queue *queue);
 
 #endif //SERVER_QUEUE_H

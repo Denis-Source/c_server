@@ -8,13 +8,13 @@
 #include "../connection/connection.h"
 #include "../queue/queue.h"
 #include "../handler/handler.h"
+#include "../server/context.h"
 
-
-#define MAX_CONNECTIONS 256
+#define SOCKET_MAX_CONNECTIONS 256
 #define PORT 6969
 
 typedef struct {
-    Queue *queue;
+    ServerContext *context;
 } ListenerArgs;
 
 void *listen_connections(void *args);

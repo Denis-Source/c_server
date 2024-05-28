@@ -76,6 +76,7 @@ bool read_queue(Queue *queue, QMessage *message) {
     return true;
 }
 
-void close_queue(Queue *queue) {
+void free_queue(Queue *queue) {
     mq_unlink(queue->name);
+    free(queue);
 }

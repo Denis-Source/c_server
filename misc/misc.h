@@ -21,6 +21,6 @@ typedef enum {
 
 bool sanitize_buffer(char *buffer, size_t size);
 
-void format_message(char *message, Connection *connection, MessageType type);
+void format_message(char *message, char *result, Connection *connection, MessageType type);
 
 #endif //SERVER_MISC_H

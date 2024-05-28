@@ -1,22 +1,21 @@
 #include "table.h"
 
 
-KVTable *table_init(size_t size) {
+KVTable *init_table(size_t size) {
     KVTable *table = malloc(sizeof(KVTable));
     if (table == NULL) return NULL;
 
-    table->size = size;
     table->storage = (KVItem *) calloc(size, sizeof(KVItem));
-
     if (table->storage == NULL) {
         free(table);
         return NULL;
     }
+    table->size = size;
 
     return table;
 }
 
-bool table_set(KVTable *table, void *key, size_t size, void *value) {
+bool set_table(KVTable *table, void *key, size_t size, void *value) {
     u_int64_t hash_value = hash(key, size) % table->size;
     u_int64_t index;
 
@@ -36,11 +35,11 @@ bool table_set(KVTable *table, void *key, size_t size, void *value) {
 }
 
 
-bool table_clear(KVTable *table, void *key, size_t size) {
-    return table_set(table, key, size, NULL);
+bool clear_table(KVTable *table, void *key, size_t size) {
+    return set_table(table, key, size, NULL);
 }
 
-bool table_get(KVTable *table, void *key, size_t size, void **result) {
+bool get_table(KVTable *table, void *key, size_t size, void **result) {
     u_int64_t hash_value = hash(key, size) % table->size;
     u_int64_t index;
 
@@ -60,7 +59,7 @@ bool table_get(KVTable *table, void *key, size_t size, void **result) {
     return false;
 }
 
-void table_free(KVTable *table) {
+void free_table(KVTable *table) {
     free(table->storage);
     free(table);
 }
