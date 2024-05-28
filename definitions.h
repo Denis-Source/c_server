@@ -3,7 +3,7 @@
 
 
 #define QUEUE_NAME "/c_server"
-#define QUEUE_MAX_MESSAGES 16
+#define QUEUE_MAX_MESSAGES 10
 #define QUEUE_PAYLOAD_SIZE 256
 #define QUEUE_PERMISSIONS 0660
 

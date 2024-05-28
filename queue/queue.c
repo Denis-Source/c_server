@@ -23,7 +23,7 @@ Queue *create_queue(char *name) {
             .mq_msgsize = queue_message_size,
             .mq_curmsgs = 0,
     };
-
+    mq_unlink(name);
     mqd_t mqd = mq_open(name, O_CREAT | O_RDWR, QUEUE_PERMISSIONS, &attr);
     if (mqd == (mqd_t) -1) {
         perror("mq_open");
