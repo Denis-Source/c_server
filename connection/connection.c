@@ -1,11 +1,20 @@
 #include "connection.h"
 
+u_int64_t static_generate_random() {
+    static u_int64_t value = 0;
+    if (value == 0) {
+        srand((unsigned int) (time(NULL) ^ getpid()));
+        value = ((u_int64_t) rand() << 32) | rand();
+    }
+    return value;
+}
+
 
 void populate_connection(Connection *conn, int32_t fd, u_int32_t address, u_int16_t port) {
     conn->fd = fd;
     conn->address = address;
     conn->port = port;
-    conn->name = (((u_int64_t) address << 16) + port) ^ CONNECTION_MASK;
+    conn->name = ((((u_int64_t) address << 16) | port) ^ static_generate_random()) & 0x0000ffffffffffff;
 }
 
 void empty_connection(Connection *conn) {

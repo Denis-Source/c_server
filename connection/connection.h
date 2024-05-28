@@ -6,12 +6,13 @@
 #include <unistd.h>
 #include <arpa/inet.h>
 #include <stdlib.h>
+#include <time.h>
+#include <unistd.h>
 
 #include "../hash_table/hash.h"
 
 
 #define CONNECTIONS_LIMIT 256
-#define CONNECTION_MASK 0x4C5A3F2C1B8D
 
 typedef struct {
     int32_t fd;
