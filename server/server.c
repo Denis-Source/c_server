@@ -47,7 +47,6 @@ void server_handle_open_connection(QMessage *q_message, ServerContext *context) 
     printf("%s", buffer);
 }
 
-
 void server_handle_close_connection(QMessage *q_message, ServerContext *context) {
     char buffer[MESSAGE_SIZE] = {0};
 
@@ -124,7 +123,7 @@ void server_serve() {
         printf("Cannot allocate context\n");
         return;
     }
-    Queue *queue = init_queue(QUEUE_MODE_READ);
+    Queue *queue = open_queue(QUEUE_MODE_READ);
     if (queue == NULL) {
         printf("Cannot open mqueue\n");
         return;
@@ -145,5 +144,5 @@ void server_serve() {
     }
     printf("Main Loop left\n");
     free_server_context(context);
-    free_queue(queue);
+    close_queue(queue);
 }

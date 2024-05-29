@@ -5,7 +5,7 @@ RecentMessages *init_recent_messages(size_t size) {
     RecentMessages *buffer = malloc(sizeof(RecentMessages));
     if (buffer == NULL) return NULL;
 
-    buffer->storage = malloc(size * sizeof(char*));
+    buffer->storage = malloc(size * sizeof(char *));
     if (buffer->storage == NULL) {
         free(buffer);
         return NULL;
@@ -14,6 +14,7 @@ RecentMessages *init_recent_messages(size_t size) {
     for (size_t i = 0; i < size; i++) {
         buffer->storage[i] = malloc(MESSAGE_SIZE * sizeof(char));
         if (buffer->storage[i] == NULL) {
+            // Free previously allocated memory
             for (size_t j = 0; j < i; j++) {
                 free(buffer->storage[j]);
             }
@@ -24,10 +25,10 @@ RecentMessages *init_recent_messages(size_t size) {
     }
 
     buffer->head = INVALID_ADDRESS;
+    buffer->tail = INVALID_ADDRESS;
     buffer->size = size;
     return buffer;
 }
-
 
 bool add_recent_messages(RecentMessages *recent_messages, char *data) {
     bool replaced = false;
@@ -46,7 +47,6 @@ bool add_recent_messages(RecentMessages *recent_messages, char *data) {
     return replaced;
 }
 
-
 bool get_head_recent_messages(RecentMessages *recent_messages, char *result, size_t index) {
     if (recent_messages->head == INVALID_ADDRESS) return false;
     if (index >= recent_messages->size) return false;
@@ -56,7 +56,6 @@ bool get_head_recent_messages(RecentMessages *recent_messages, char *result, siz
     return true;
 }
 
-
 bool get_tail_recent_messages(RecentMessages *recent_messages, char *result, size_t index) {
     if (recent_messages->tail == INVALID_ADDRESS) return false;
     if (index >= recent_messages->size) return false;
@@ -65,7 +64,6 @@ bool get_tail_recent_messages(RecentMessages *recent_messages, char *result, siz
     memcpy(result, recent_messages->storage[real_index], MESSAGE_SIZE);
     return true;
 }
-
 
 void free_recent_messages(RecentMessages *recent_messages) {
     for (size_t i = 0; i < recent_messages->size; i++) {

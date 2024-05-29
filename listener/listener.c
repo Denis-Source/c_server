@@ -4,7 +4,7 @@
 void *listen_connections(void *args) {
     ListenerArgs *t_args = (ListenerArgs*) args;
 
-    Queue *queue = init_queue(QUEUE_MODE_WRITE);
+    Queue *queue = open_queue(QUEUE_MODE_WRITE);
     if (queue == NULL) {
         printf("Cannot open mqueue\n");
         return NULL;

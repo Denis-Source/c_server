@@ -10,11 +10,10 @@ void send_recent_messages(Connection *connection, RecentMessages *recent_message
     }
 }
 
-
 void *handle_connection(void *arg) {
     HandlerArgs *t_args = (HandlerArgs *) arg;
 
-    Queue *queue = init_queue(QUEUE_MODE_WRITE);
+    Queue *queue = open_queue(QUEUE_MODE_WRITE);
     if (queue == NULL) {
         printf("Cannot open mqueue\n");
         return NULL;
@@ -39,6 +38,6 @@ void *handle_connection(void *arg) {
     send_queue(queue, &message);
 
     free(arg);
-    free_queue(queue);
+    close_queue(queue);
     return NULL;
 }

@@ -1,18 +1,6 @@
 #include "connection.h"
 
 
-u_int64_t static_generate_random() {
-    static u_int64_t value = 0;
-    if (value == 0) {
-        srand((uint32_t)(time(NULL) ^ getpid()));
-        do {
-            value = ((u_int64_t)rand() << 32) | rand();
-        } while (value == 0);
-    }
-    return value;
-}
-
-
 void populate_connection(Connection *conn, int32_t fd, u_int32_t address, u_int16_t port) {
     conn->fd = fd;
     conn->address = address;
@@ -20,14 +8,12 @@ void populate_connection(Connection *conn, int32_t fd, u_int32_t address, u_int1
     conn->name = ((((u_int64_t) address << 16) | port) ^ static_generate_random()) & 0x0000ffffffffffff;
 }
 
-
 void empty_connection(Connection *conn) {
     conn->fd = 0;
     conn->address = 0;
     conn->port = 0;
     conn->name = 0;
 }
-
 
 bool bind_connection(u_int16_t port, Connection *conn) {
     int32_t fd;
@@ -49,7 +35,6 @@ bool bind_connection(u_int16_t port, Connection *conn) {
     return true;
 }
 
-
 bool accept_connection(Connection *server_connection, Connection *client_connection) {
     struct sockaddr_in client_socket_address;
     int32_t client_fd;
@@ -67,23 +52,19 @@ bool accept_connection(Connection *server_connection, Connection *client_connect
     return true;
 }
 
-
 bool listen_on_connection(Connection *connection) {
     return listen(connection->fd, SOCKET_MAX_CONNECTIONS) == 0;
 }
-
 
 bool read_connection(Connection *conn, void *buffer, size_t buffer_size) {
     if (recv(conn->fd, buffer, buffer_size, 0) <= 0) return false;
     return true;
 }
 
-
 bool send_connection(Connection *conn, void *buffer, size_t buffer_size) {
     if (send(conn->fd, buffer, buffer_size, 0) == -1) return false;
     return true;
 }
-
 
 void close_connection(Connection *conn) {
     close(conn->fd);

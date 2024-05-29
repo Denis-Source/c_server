@@ -1,10 +1,9 @@
-#include "misc.h"
+#include "formatting.h"
 
 
 bool is_allowed_char(char c) {
     return strchr(MESSAGE_ALLOWED_SYMBOLS, c) != NULL;
 }
-
 
 bool sanitize_buffer(char *buffer, size_t size) {
     bool valid = true;
@@ -18,7 +17,6 @@ bool sanitize_buffer(char *buffer, size_t size) {
 
     return valid;
 }
-
 
 void format_message(char *result, char *message, Connection *connection, MessageType type) {
     switch (type) {

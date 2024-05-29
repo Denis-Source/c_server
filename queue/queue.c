@@ -14,7 +14,12 @@ void populate_queue(Queue *queue, QueueType type, int32_t mqd) {
 }
 
 
-bool create_queues() {
+void unlink_queue() {
+    mq_unlink(QUEUE_NAME);
+}
+
+
+bool create_queue() {
     size_t queue_message_size = QUEUE_PAYLOAD_SIZE + sizeof(QMessageType) + sizeof(Connection) + 1;
 
     struct mq_attr attr = {
@@ -23,7 +28,7 @@ bool create_queues() {
             .mq_msgsize = queue_message_size,
             .mq_curmsgs = 0,
     };
-    mq_unlink(QUEUE_NAME);
+    unlink_queue();
     mqd_t mqd = mq_open(QUEUE_NAME, O_CREAT | O_RDWR, QUEUE_PERMISSIONS, &attr);
     if (mqd == (mqd_t) -1) {
         perror("mq_open");
@@ -33,7 +38,7 @@ bool create_queues() {
 }
 
 
-Queue *init_queue(QueueType type) {
+Queue *open_queue(QueueType type) {
     int32_t mode;
     switch (type) {
         case QUEUE_MODE_READ:
@@ -59,7 +64,7 @@ Queue *init_queue(QueueType type) {
 }
 
 
-bool free_queue(Queue *queue) {
+bool close_queue(Queue *queue) {
     if (mq_close(queue->mqd) == -1) return false;
     free(queue);
     queue = NULL;
@@ -101,9 +106,4 @@ bool read_queue(Queue *queue, QMessage *message) {
     memcpy(message->payload, buffer + sizeof(QMessageType) + sizeof(Connection), QUEUE_PAYLOAD_SIZE);
 
     return true;
-}
-
-
-void unlink_queues() {
-    mq_unlink(QUEUE_NAME);
 }
