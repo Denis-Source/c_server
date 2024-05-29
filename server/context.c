@@ -2,9 +2,14 @@
 
 
 ServerContext *initialize_server_context() {
-    Queue *queue = create_queue(QUEUE_NAME);
+    if (!create_queues()) {
+        printf("Cannot create mqueue");
+        return NULL;
+    }
+
+    Queue *queue = init_queue(QUEUE_MODE_READWRITE);
     if (queue == NULL) {
-        printf("Cannot allocate mqueue\n");
+        printf("Cannot open mqueue\n");
         return NULL;
     }
 

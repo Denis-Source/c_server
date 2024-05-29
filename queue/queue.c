@@ -7,14 +7,14 @@ void populate_message(QMessage *message, QMessageType type, Connection *connecti
     if (payload != NULL) memcpy(message->payload, payload, QUEUE_PAYLOAD_SIZE);
 }
 
-void populate_queue(Queue *queue, char *name, bool valid) {
-    queue->valid = valid;
-    queue->name = name;
+
+void populate_queue(Queue *queue, QueueType type, int32_t mqd) {
+    queue->type = type;
+    queue->mqd = mqd;
 }
 
-Queue *create_queue(char *name) {
-    Queue *queue = malloc(sizeof(Queue));
-    if (queue == NULL) return NULL;
+
+bool create_queues() {
     size_t queue_message_size = QUEUE_PAYLOAD_SIZE + sizeof(QMessageType) + sizeof(Connection) + 1;
 
     struct mq_attr attr = {
@@ -23,51 +23,78 @@ Queue *create_queue(char *name) {
             .mq_msgsize = queue_message_size,
             .mq_curmsgs = 0,
     };
-    mq_unlink(name);
-    mqd_t mqd = mq_open(name, O_CREAT | O_RDWR, QUEUE_PERMISSIONS, &attr);
+    mq_unlink(QUEUE_NAME);
+    mqd_t mqd = mq_open(QUEUE_NAME, O_CREAT | O_RDWR, QUEUE_PERMISSIONS, &attr);
     if (mqd == (mqd_t) -1) {
         perror("mq_open");
+        return false;
+    }
+    return true;
+}
+
+
+Queue *init_queue(QueueType type) {
+    int32_t mode;
+    switch (type) {
+        case QUEUE_MODE_READ:
+            mode = O_RDONLY;
+            break;
+        case QUEUE_MODE_WRITE:
+            mode = O_WRONLY;
+            break;
+        default:
+            mode = O_RDWR;
+            break;
+    }
+    mqd_t mqd = mq_open(QUEUE_NAME, mode);
+    if (mqd == -1) {
+        perror("mq_send");
         return NULL;
     }
+    Queue *queue = malloc(sizeof(Queue));
+    if (queue == NULL) return NULL;
 
-    populate_queue(queue, name, true);
+    populate_queue(queue, type, mqd);
     return queue;
 }
 
+
+bool free_queue(Queue *queue) {
+    if (mq_close(queue->mqd) == -1) return false;
+    free(queue);
+    queue = NULL;
+
+    return true;
+}
+
+
 bool send_queue(Queue *queue, QMessage *message) {
+    if (queue->type == QUEUE_MODE_READ) return false;
+
     size_t queue_message_size = QUEUE_PAYLOAD_SIZE + sizeof(QMessageType) + sizeof(Connection) + 1;
     char buffer[queue_message_size];
     memcpy(buffer, &message->type, sizeof(QMessageType));
     memcpy(buffer + sizeof(QMessageType), &message->connection, sizeof(Connection));
     memcpy(buffer + sizeof(QMessageType) + sizeof(Connection), message->payload, QUEUE_PAYLOAD_SIZE);
 
-    mqd_t mq = mq_open(queue->name, O_WRONLY);
-
-
-    if (mq_send(mq, buffer, queue_message_size, 0) == -1) {
+    if (mq_send(queue->mqd, buffer, queue_message_size, 0) == -1) {
         perror("mq_send");
-        queue->valid = false;
-        mq_close(mq);
         return false;
     }
-    mq_close(mq);
     return true;
 }
 
+
 bool read_queue(Queue *queue, QMessage *message) {
+    if (queue->type == QUEUE_MODE_WRITE) return false;
+
     size_t queue_message_size = QUEUE_PAYLOAD_SIZE + sizeof(QMessageType) + sizeof(Connection);
     char buffer[queue_message_size];
 
-    mqd_t mq = mq_open(queue->name, O_RDONLY);
-    if (mq == (mqd_t) -1) return false;
-
-    if (mq_receive(mq, buffer, queue_message_size + 1, NULL) == -1) {
+    if (mq_receive(queue->mqd, buffer, queue_message_size + 1, NULL) == -1) {
         perror("mq_receive");
-        queue->valid = false;
-        mq_close(mq);
         return false;
     }
-    mq_close(mq);
 
     memcpy(&message->type, buffer, sizeof(QMessageType));
     memcpy(&message->connection, buffer + sizeof(QMessageType), sizeof(Connection));
@@ -76,7 +103,7 @@ bool read_queue(Queue *queue, QMessage *message) {
     return true;
 }
 
-void free_queue(Queue *queue) {
-    mq_unlink(queue->name);
-    free(queue);
+
+void unlink_queues() {
+    mq_unlink(QUEUE_NAME);
 }

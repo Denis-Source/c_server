@@ -22,6 +22,11 @@ typedef enum {
     Q_MESSAGE_STOP_LISTENING
 } QMessageType;
 
+typedef enum {
+    QUEUE_MODE_READ,
+    QUEUE_MODE_WRITE,
+    QUEUE_MODE_READWRITE
+} QueueType;
 
 typedef struct {
     QMessageType type;
@@ -30,19 +35,25 @@ typedef struct {
 } QMessage;
 
 typedef struct {
-    bool valid;
-    char *name;
+    QueueType type;
+    int32_t mqd;
 } Queue;
+
 
 void populate_message(QMessage *message, QMessageType type, Connection *connection, char *payload);
 
-Queue *create_queue(char *name);
+void populate_queue(Queue *queue, QueueType type, int32_t mqd);
+
+bool create_queues();
+
+Queue *init_queue(QueueType type);
+
+bool free_queue(Queue *queue);
 
 bool send_queue(Queue *queue, QMessage *message);
 
 bool read_queue(Queue *queue, QMessage *message);
 
-void free_queue(Queue *queue);
-
+void unlink_queues();
 
 #endif //SERVER_QUEUE_H
