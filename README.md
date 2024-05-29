@@ -1,5 +1,7 @@
 Simple TCP server written in C
 
+<img src="https://github.com/Denis-Source/c_server/assets/58669569/027e25d2-3ff7-46d8-b584-736e68f7dc67" width="100%">
+
 > Can be used with `netcat` or `telnet`
 
 ## Project Overview:
