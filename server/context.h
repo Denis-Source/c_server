@@ -11,7 +11,6 @@
 typedef struct {
     KVTable *connections;
     RecentMessages *recent_messages;
-    Queue *queue;
 } ServerContext;
 
 ServerContext *initialize_server_context();

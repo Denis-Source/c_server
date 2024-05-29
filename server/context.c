@@ -3,13 +3,7 @@
 
 ServerContext *initialize_server_context() {
     if (!create_queues()) {
-        printf("Cannot create mqueue");
-        return NULL;
-    }
-
-    Queue *queue = init_queue(QUEUE_MODE_READWRITE);
-    if (queue == NULL) {
-        printf("Cannot open mqueue\n");
+        printf("Cannot create mqueue\n");
         return NULL;
     }
 
@@ -31,7 +25,6 @@ ServerContext *initialize_server_context() {
 
     context->connections = connections;
     context->recent_messages = recent_messages;
-    context->queue = queue;
 
     return context;
 }
@@ -39,7 +32,6 @@ ServerContext *initialize_server_context() {
 
 void free_server_context(ServerContext *context) {
     free_recent_messages(context->recent_messages);
-    free_queue(context->queue);
     free_recent_messages(context->recent_messages);
     free(context);
 }

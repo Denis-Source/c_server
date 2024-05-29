@@ -14,24 +14,31 @@ void send_recent_messages(Connection *connection, RecentMessages *recent_message
 void *handle_connection(void *arg) {
     HandlerArgs *t_args = (HandlerArgs *) arg;
 
+    Queue *queue = init_queue(QUEUE_MODE_WRITE);
+    if (queue == NULL) {
+        printf("Cannot open mqueue\n");
+        return NULL;
+    }
     Connection *client_connection = t_args->client_connection;
     ServerContext *context = t_args->context;
     char buffer[MESSAGE_SIZE] = {0};
     QMessage message;
 
     populate_message(&message, Q_MESSAGE_OPEN_CONNECTION, client_connection, NULL);
-    send_queue(context->queue, &message);
+    send_queue(queue, &message);
     send_recent_messages(client_connection, context->recent_messages);
     while (read_connection(client_connection, buffer, MESSAGE_BUFFER_SIZE - 1)) {
         sanitize_buffer(buffer, MESSAGE_BUFFER_SIZE);
         memcpy(message.payload, buffer, sizeof(message.payload));
         populate_message(&message, Q_MESSAGE_RECEIVED, client_connection, buffer);
-        send_queue(context->queue, &message);
+        send_queue(queue, &message);
         memset(buffer, '\0', MESSAGE_BUFFER_SIZE);
     }
     close_connection(client_connection);
     populate_message(&message, Q_MESSAGE_CLOSE_CONNECTION, client_connection, NULL);
-    send_queue(context->queue, &message);
+    send_queue(queue, &message);
+
     free(arg);
+    free_queue(queue);
     return NULL;
 }

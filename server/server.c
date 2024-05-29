@@ -120,6 +120,15 @@ void server_handle_queue(QMessage *q_message, ServerContext *context) {
 
 void server_serve() {
     ServerContext *context = initialize_server_context();
+    if (context == NULL) {
+        printf("Cannot allocate context\n");
+        return;
+    }
+    Queue *queue = init_queue(QUEUE_MODE_READ);
+    if (queue == NULL) {
+        printf("Cannot open mqueue\n");
+        return;
+    }
     QMessage q_message = {0};
 
     pthread_t thread_id;
@@ -131,9 +140,10 @@ void server_serve() {
     listener_args->context = context;
     pthread_create(&thread_id, NULL, listen_connections, (void *) listener_args);
 
-
-    while (read_queue(context->queue, &q_message)) {
+    while (read_queue(queue, &q_message)) {
         server_handle_queue(&q_message, context);
     }
+    printf("Main Loop left\n");
     free_server_context(context);
+    free_queue(queue);
 }

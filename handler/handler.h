@@ -8,7 +8,7 @@
 #include "../hash_table/table.h"
 #include "../misc/misc.h"
 #include "../server/context.h"
-
+#include "../queue/queue.h"
 
 typedef struct {
     Connection *client_connection;
