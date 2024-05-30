@@ -40,8 +40,3 @@ The project aims to develop a simple chat application that can handle incoming c
 
 ## Target Environment:
 - The server application is designed to run in a POSIX-compliant environment, such as Unix-like operating systems (e.g., Linux).
-
-## Potential Extensions:
-- **Security Enhancements**: Implement encryption and authentication mechanisms to ensure secure communication between clients and the server.
-- **Feature Expansion**: Add support for additional functionalities, such as file transfer, user authentication, and real-time messaging.
-- **Performance Optimization**: Fine-tune server performance by optimizing data structures, minimizing resource usage, and implementing caching strategies.
